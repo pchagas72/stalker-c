@@ -3,9 +3,7 @@
 
 #include <SDL3/SDL.h>
 #include "../camera/camera.h"
-#include "../map/map.h" // This safely includes NPCData and the dialogue constants
-
-// Note: We no longer need to forward-declare NPCData
+#include "../map/map.h" // This includes NPCData
 
 typedef struct {
     SDL_FRect rect;

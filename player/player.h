@@ -18,8 +18,8 @@
 /// Maybe I'll actually cap the physics of the player a bit to make it simpler
 #define PLAYER_ACCELERATION 0.15f
 #define PLAYER_FRICTION 0.70f
-#define MAX_PLAYER_WALKING_SPEED 2.0f
-#define MAX_PLAYER_RUNNING_SPEED 4.0f
+#define MAX_PLAYER_WALKING_SPEED 1.3f
+#define MAX_PLAYER_RUNNING_SPEED 2.0f
 
 /// Player sensors
 /// These are really not sensors, they just interact with the map

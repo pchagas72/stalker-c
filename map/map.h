@@ -14,9 +14,8 @@
 //#define MAP_GRID_HEIGHT  30
 #define TILE_SIZE        16
 #define MAX_ENEMIES      10
-#define MAX_NPCS         10 // New: Max number of NPCs
+#define MAX_NPCS         10
 
-// Moved dialogue defines here to break the circular dependency
 #define MAX_DIALOGUE_LINES 10
 #define MAX_DIALOGUE_LINE_LENGTH 128
 
@@ -27,9 +26,8 @@ typedef enum {
     STATE_PARSING_MAP,
 } ParserState;
 
-// Holds enemy data
 typedef struct {
-    char id[4];       // e.g., "E1", "E2"
+    char id[4];
     Vector2f size;
     Vector2 spawn_pos;
     bool has_spawned;
@@ -43,8 +41,6 @@ typedef struct {
     float attacking_speed;
 } EnemyData;
 
-
-// The NPCData struct now uses the defines from this file
 typedef struct NPCData {
     char id[4];
     Vector2f size;
@@ -61,12 +57,10 @@ typedef struct {
     Vector2 playerSpawn;
     EnemyData enemies[MAX_ENEMIES];
     int enemy_count;
-    NPCData npcs[MAX_NPCS]; // New: Array to hold parsed NPC data
-    int npc_count;          // New: Counter for parsed NPCs
+    NPCData npcs[MAX_NPCS];
+    int npc_count;
 } Map;
 
-
-// Parser that reads every map file
 typedef struct {
     ParserState state;
     int line_number; 
@@ -74,7 +68,6 @@ typedef struct {
     char peek;
 } Parser;
 
-// --- Public Functions ---
 void map_load_from_file(Map* map, const char* filename);
 void map_render(Map* map, SDL_Renderer* renderer, const SDL_FRect *camera);
 bool map_has_line_of_sight(const Map *map, Vector2f start, Vector2f end);

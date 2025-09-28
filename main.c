@@ -31,8 +31,8 @@ Map current_level_map;
 Player player;
 Enemy enemies[MAX_ENEMIES];
 int active_enemy_count = 0;
-NPC npcs[MAX_NPCS]; // New: Array for active NPCs
-int active_npc_count = 0; // New: Counter for active NPCs
+NPC npcs[MAX_NPCS];
+int active_npc_count = 0;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv){
     printf("[SDL] Initializing SDL");
@@ -95,20 +95,17 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
     }
 
     if (event->type == SDL_EVENT_KEY_DOWN) {
-        // We handle the 'E' key for all dialogue interactions here
         if (event->key.key == SDLK_E) {
             if (dialogue_is_active()) {
-                // If a conversation is already active, 'E' advances it.
                 dialogue_advance();
             } else {
-                // If not, 'E' tries to start one with a nearby NPC.
                 Vector2f player_center = { player.rect.x + player.rect.w / 2.0f, player.rect.y + player.rect.h / 2.0f };
                 for (int i = 0; i < active_npc_count; ++i) {
                     Vector2f npc_center = { npcs[i].rect.x + npcs[i].rect.w / 2.0f, npcs[i].rect.y + npcs[i].rect.h / 2.0f };
                     float distance = vector_magnitude(vector_subtract(player_center, npc_center));
-                    if (distance < 50.0f) { // Interaction radius
+                    if (distance < 50.0f && map_has_line_of_sight(&current_level_map, player_center, npc_center)) {
                         dialogue_start_conversation(npcs[i].dialogue_lines, npcs[i].dialogue_line_count);
-                        break; // Interact with the first NPC in range
+                        break;
                     }
                 }
             }

@@ -8,9 +8,6 @@
 #include <stdlib.h>
 
 
-// --- Helper function ---
-// We'll define this inside the main load function to keep it local.
-// It will help us find an NPC in our array by its ID string (e.g., "N1").
 static NPCData* find_npc_data_by_id(Map* map, const char* id) {
     for (int i = 0; i < map->npc_count; ++i) {
         if (strcmp(map->npcs[i].id, id) == 0) {
@@ -28,14 +25,14 @@ void map_load_from_file(Map* map, const char* filename) {
         return;
     }
 
-    // This assumes the first line of your map file is "width,height"
+    // This assumes the first line of the map file is "width,height"
     if (fscanf(file, "%d,%d\n", &map->width, &map->height) != 2) {
         printf("Error: Could not read map dimensions from %s\n", filename);
         fclose(file);
         return;
     }
 
-    // --- NEW: Dynamically allocate memory for the tiles ---
+    // Dynamically allocate memory for the tiles
     map->tiles = (int**)malloc(map->height * sizeof(int*));
     for (int i = 0; i < map->height; i++) {
         map->tiles[i] = (int*)malloc(map->width * sizeof(int));
@@ -43,10 +40,8 @@ void map_load_from_file(Map* map, const char* filename) {
 
     srand(time(NULL));
 
-    // Initialize map components
     map->enemy_count = 0;
 
-    // Create and initializes parser struct
     Parser p;
     p.state = STATE_UNKNOWN;
     p.line_number = 0;
@@ -75,7 +70,6 @@ void map_load_from_file(Map* map, const char* filename) {
 
         switch (p.state){
             case STATE_PARSING_ENEMY:
-                // sscanf is a powerful tool to extract formatted data from a string
                 if (map->enemy_count < MAX_ENEMIES){
                     sscanf(line_buffer, "%[^=]=(%f,%f,%f,%f,%f,%f,%f,%f)",
                             map->enemies[map->enemy_count].id,
@@ -168,8 +162,6 @@ void map_load_from_file(Map* map, const char* filename) {
     }
 }
 
-/// This function renders the map accordingly to the object created in the previous 
-/// function
 void map_render(Map* map, SDL_Renderer* renderer, const SDL_FRect* camera) {
     const float map_pixel_width = map->width * TILE_SIZE;
     const float map_pixel_height = map->height * TILE_SIZE;

@@ -1,7 +1,7 @@
 // stalker-c/enemies/enemy.c
+// This is without a doubt the most complex part of the game for now
 
 #include "enemy.h"
-#include "../defs/defs.h"
 #include <SDL3/SDL_rect.h>
 #include <stdio.h>
 

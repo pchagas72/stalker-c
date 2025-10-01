@@ -43,12 +43,9 @@ void text_render(SDL_Renderer* renderer, const char* text, int x, int y, SDL_Col
     SDL_DestroySurface(surface);
 }
 
-// --- NEW FUNCTION ---
 void text_render_wrapped(SDL_Renderer* renderer, const char* text, int x, int y, SDL_Color color, int wrap_length) {
     if (font == NULL) return;
 
-    // This is the magic function that handles wrapping for us.
-    // We tell it how wide the text can be (wrap_length) before it should create a new line.
     SDL_Surface* surface = TTF_RenderText_Solid_Wrapped(font, text, 0, color, wrap_length);
     if (surface == NULL) {
         printf("Failed to render wrapped text surface: %s\n", SDL_GetError());

@@ -1,18 +1,17 @@
 #include "dialogue.h"
 #include "../text/text.h"
-#include <string.h> // Needed for strlen and strncpy
+#include <string.h>
 
 #define TEXT_SPEED 40 // Milliseconds per character
 
-// --- New static variables for animation ---
+// New static variables for animation
 static char** current_conversation = NULL;
 static int total_lines = 0;
 static int current_line_index = 0;
 
-static int visible_chars = 0; // How many characters are currently visible
-static Uint64 last_char_time = 0; // When the last character was shown
+static int visible_chars = 0;
+static Uint64 last_char_time = 0;
 
-// --- New Update Function ---
 // This will be called every frame to advance the animation.
 void dialogue_update() {
     if (!dialogue_is_active()) return;
@@ -21,7 +20,7 @@ void dialogue_update() {
     const char* full_line = current_conversation[current_line_index];
     int line_length = strlen(full_line);
 
-    // If not all characters are visible yet...
+    // If not all characters are visible yet
     if (visible_chars < line_length) {
         Uint64 current_time = SDL_GetTicks();
         // and if enough time has passed since the last character...
@@ -31,7 +30,6 @@ void dialogue_update() {
         }
     }
 }
-
 
 void dialogue_start_conversation(char** lines, int line_count) {
     if (lines && line_count > 0) {
@@ -76,7 +74,6 @@ void dialogue_end_conversation() {
 
 void dialogue_render(SDL_Renderer* renderer) {
     if (dialogue_is_active()) {
-        // ... (dialogue box rendering is unchanged) ...
         SDL_FRect dialogue_box = { .x = 20, .y = 130, .w = 320 - 40, .h = 40 };
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
@@ -88,14 +85,11 @@ void dialogue_render(SDL_Renderer* renderer) {
         SDL_Color white = {255, 255, 255, 255};
         int wrap_width = 1100; 
 
-        // --- THE CHANGE ---
-        // We now render a *substring* of the full line.
         const char* full_line = current_conversation[current_line_index];
         
-        // Create a temporary buffer to hold the visible part of the text
         char render_buffer[MAX_DIALOGUE_LINE_LENGTH];
         strncpy(render_buffer, full_line, visible_chars);
-        render_buffer[visible_chars] = '\0'; // Null-terminate the string!
+        render_buffer[visible_chars] = '\0';
 
         text_render_wrapped(renderer, render_buffer, 30, 140, white, wrap_width);
     }

@@ -10,8 +10,6 @@
 #include "../defs/defs.h"
 #include "../helper/vector.h"
 
-//#define MAP_GRID_WIDTH   40
-//#define MAP_GRID_HEIGHT  30
 #define TILE_SIZE        16
 #define MAX_ENEMIES      10
 #define MAX_NPCS         10

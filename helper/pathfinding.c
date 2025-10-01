@@ -2,11 +2,10 @@
 
 #include "pathfinding.h"
 #include <stdlib.h>
-#include <string.h> // <-- Add this for memset
+#include <string.h>
 #include <float.h>
 #include <stdbool.h>
 
-// --- A* Node Structure (unchanged) ---
 typedef struct Node {
     int x, y;
     float g_score;
@@ -15,7 +14,6 @@ typedef struct Node {
     bool in_open_set;
 } Node;
 
-// --- Priority Queue (Min-Heap) Implementation (unchanged) ---
 typedef struct {
     Node** nodes;
     int count;
@@ -63,7 +61,6 @@ static void heapify_down(PriorityQueue* pq, int index) {
     }
 }
 
-// --- FIX 1: Pass map dimensions to pq_create ---
 static PriorityQueue* pq_create(int width, int height) {
     PriorityQueue* pq = (PriorityQueue*)malloc(sizeof(PriorityQueue));
     pq->capacity = width * height;
@@ -95,14 +92,11 @@ static void pq_destroy(PriorityQueue* pq) {
     free(pq);
 }
 
-// --- Heuristic function (unchanged) ---
 static float heuristic(int x1, int y1, int x2, int y2) {
     return abs(x1 - x2) + abs(y1 - y2);
 }
 
-// --- Pathfinding function (MODIFIED) ---
 Path* pathfinding_find_path(const Map* map, Vector2f start_pos, Vector2f end_pos) {
-    // --- Coordinate conversion (unchanged) ---
     const float map_pixel_width = map->width * TILE_SIZE;
     const float map_pixel_height = map->height * TILE_SIZE;
 
@@ -111,7 +105,6 @@ Path* pathfinding_find_path(const Map* map, Vector2f start_pos, Vector2f end_pos
     int end_x = (end_pos.x) / TILE_SIZE;
     int end_y = (end_pos.y ) / TILE_SIZE;
 
-    // --- Boundary and wall checks (MODIFIED) ---
     if (end_y < 0 || end_y >= map->height || end_x < 0 || end_x >= map->width || map->tiles[end_y][end_x] == 1) {
         return NULL;
     }
@@ -119,9 +112,6 @@ Path* pathfinding_find_path(const Map* map, Vector2f start_pos, Vector2f end_pos
         return NULL;
     }
 
-
-    // --- A* setup (MODIFIED) ---
-    // --- FIX 2: Use dynamic allocation and memset ---
     Node*** all_nodes = (Node***)malloc(map->height * sizeof(Node**));
     for (int i = 0; i < map->height; i++) {
         all_nodes[i] = (Node**)malloc(map->width * sizeof(Node*));
@@ -163,7 +153,6 @@ Path* pathfinding_find_path(const Map* map, Vector2f start_pos, Vector2f end_pos
             }
             path->current_node = 0;
 
-            // --- Cleanup (MODIFIED) ---
             pq_destroy(open_set);
             for (int y = 0; y < map->height; y++) {
                 for (int x = 0; x < map->width; x++) {
@@ -177,16 +166,15 @@ Path* pathfinding_find_path(const Map* map, Vector2f start_pos, Vector2f end_pos
 
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                if (abs(dx) == abs(dy)) continue; // Only cardinal directions
+                if (abs(dx) == abs(dy)) continue;
 
                 int neighbor_x = current->x + dx;
                 int neighbor_y = current->y + dy;
 
                 if (neighbor_x < 0 || neighbor_x >= map->width || neighbor_y < 0 || neighbor_y >= map->height || map->tiles[neighbor_y][neighbor_x] == 1) {
-                    continue; // Out of bounds or a wall
+                    continue;
                 }
 
-                // NEW: Add a cost to tiles near walls to encourage the AI to avoid them.
                 float cost = 1.0f;
                 for (int nx = -1; nx <= 1; nx++) {
                     for (int ny = -1; ny <= 1; ny++) {
@@ -226,7 +214,6 @@ Path* pathfinding_find_path(const Map* map, Vector2f start_pos, Vector2f end_pos
         }
     }
 
-    // --- Cleanup on failure (MODIFIED) ---
     pq_destroy(open_set);
     for (int y = 0; y < map->height; y++) {
         for (int x = 0; x < map->width; x++) {
@@ -238,7 +225,6 @@ Path* pathfinding_find_path(const Map* map, Vector2f start_pos, Vector2f end_pos
     return NULL;
 }
 
-// --- path_destroy (unchanged) ---
 void path_destroy(Path* path) {
     if (path) {
         free(path);

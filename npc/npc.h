@@ -3,7 +3,7 @@
 
 #include <SDL3/SDL.h>
 #include "../camera/camera.h"
-#include "../map/map.h" // This includes NPCData
+#include "../map/map.h"
 
 typedef struct {
     SDL_FRect rect;

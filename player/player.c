@@ -54,7 +54,6 @@ static void player_handle_map_collision(Player* player, const Map* map) {
         return;
     }
 
-    // --- Handle X-axis collision ---
     float potential_x = player->rect.x + player->vel.x;
     int grid_x, grid_y_top, grid_y_bottom;
 
@@ -71,7 +70,6 @@ static void player_handle_map_collision(Player* player, const Map* map) {
     }
 
 
-    // --- Handle Y-axis collision ---
     float potential_y = player->rect.y + player->vel.y;
     int grid_y, grid_x_left, grid_x_right;
 
@@ -89,7 +87,6 @@ static void player_handle_map_collision(Player* player, const Map* map) {
 }
 
 void player_update(Player* player, const bool* keyboard_state, const Map* map) {
-    // --- (Input gathering and velocity calculation is unchanged) ---
     int input_x = 0;
     int input_y = 0;
     bool is_running = keyboard_state[SDL_SCANCODE_LSHIFT];
@@ -124,10 +121,8 @@ void player_update(Player* player, const bool* keyboard_state, const Map* map) {
         player->vel.y = (player->vel.y / current_speed) * max_speed;
     }
 
-    // --- NEW: Handle collision before updating position ---
     player_handle_map_collision(player, map);
 
-    // --- Final position update ---
     player->rect.x += player->vel.x;
     // Btw this is a fix, if removed a core dump happens when the player runs
     // toward the bottom part of the map
